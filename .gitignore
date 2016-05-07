@@ -1,0 +1,39 @@
+# C++ objects and libs
+*.slo
+*.lo
+*.o
+*.a
+*.la
+*.lai
+*.so
+*.dll
+*.dylib
+
+# Qt-es
+*.pro.user
+*.pro.user.*
+CMakeLists.txt.user*
+moc_*.cpp
+qrc_*.cpp
+Makefile
+*.creator*
+*.files
+*.includes
+*.config
+
+!.config
+
+# Build directories
+build-*
+*-build-*
+build/
+
+# Backup and temporary files
+*~
+*.bak
+*.log
+*.autosave
+
+# Failed patch
+*.orig
+*.rej
