@@ -11,9 +11,9 @@ int main(int argc, char **argv)
     ConsoleLineParser parser(argc, argv);
 
     parser.enableHelpOption();
-    parser.appendOption<std::string>("-f", "--file", "test file path");
+    parser.appendOption<std::string>("-f", "--file", "File path");
     parser.appendOption<std::string>("-m", "--make", "Programm process command");
-    parser.appendOption<std::string>("-v", "--value", "Search word value");
+    parser.appendOption<std::string>("-v", "--value", "Value of search word");
 
     if (!parser.process())
         return 0;
@@ -156,6 +156,8 @@ int main(int argc, char **argv)
     else {
         std:: cout << parser.howToUse("-m") << std::endl;
     }
+
+    std::cout << parser.usage() << std::endl;
 
     return 0;
 }

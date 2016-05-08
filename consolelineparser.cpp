@@ -76,7 +76,7 @@ std::string ConsoleLineParser::usage()
         return "Help option is not available.";
 
     std::stringstream stream { };
-    stream << "\n\nUsage:\n";
+    stream << "\nUsage:\n";
 
     for (const auto &c : m_commands)
         stream << "  " << c->key() << "   " << c->alternativeKey() <<
