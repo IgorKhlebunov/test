@@ -4,6 +4,7 @@
 #include <fstream>
 #include <functional>
 #include <iostream>
+#include <exception>
 
 class Worker final
 {
@@ -12,17 +13,13 @@ public:
     {
     }
 
-    bool parse(const std::string &fileName, bool openAsText = true) {
-        std::ifstream file;
+    bool parse(const std::string &fileName) {
 
         try {
-            if (openAsText)
-                file.open(fileName);
-            else
-                file.open(fileName, std::ios::in | std::ios::binary);
+            std::ifstream file(fileName, std::ios::in | std::ios::binary);
 
             if (!file.is_open())
-                return false;
+                throw std::runtime_error("Failed to open file " + fileName);
 
             file.seekg(0, std::ios::end);
             const auto size = file.tellg();
@@ -33,7 +30,9 @@ public:
             file.read(&m_buffer[0], size);
             file.close();
         }
-        catch (...) {
+        catch (const std::exception & e) {
+            std::cout << e.what() << std::endl;
+
             return false;
         }
 

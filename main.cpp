@@ -1,5 +1,3 @@
-#include <iostream>
-#include <algorithm>
 #include <sstream>
 
 #include "consolelineparser.h"
@@ -17,20 +15,20 @@ int main(int argc, char **argv)
     parser.appendOption<std::string>("-m", "--make", "Programm process command");
     parser.appendOption<std::string>("-v", "--value", "Search word value");
 
-    if (!parser.process()) {
-        exit(0);
-    }
+    if (!parser.process())
+        return 0;
 
     const auto filePath = parser.value<std::string>("-f");
-    const auto work = parser.value<std::string>("-m");
 
     Worker worker;
 
+    if (!worker.parse(filePath))
+        return 0;
+
+    const auto work = parser.value<std::string>("-m");
+
     if (s_makeWords == work) {
         std::string word = parser.value<std::string>("-v");
-
-        worker.parse(filePath);
-
 
         std::function<std::string(const std::vector<char>&, const std::string&)> f =
                 [] (const std::vector<char>& v, const std::string &s) {
@@ -52,7 +50,6 @@ int main(int argc, char **argv)
 
     }
     else if (s_makeChecksum == work) {
-        worker.parse(filePath, false);
 
         /*
          * TODO: uncomment for calculate real crc32 checksum
@@ -118,24 +115,46 @@ int main(int argc, char **argv)
             checksum ^= ~0U;
 
             std::stringstream result;
-            result << "Checksum = " << std::hex << checksum;
+            result << "HEX Checksum = " << std::hex << checksum;
 
             return result.str();
         };
         */
 
-
         std::function<std::string(const std::vector<char>&)> f = [] (const std::vector<char>& v) {
 
-            return "";
+            constexpr auto isLittleEndian = static_cast<uint8_t>(0x0001);
+
+            auto loop = v.size() / sizeof(uint32_t);
+            auto i = v.begin();
+
+            auto calculate = [] (bool isLittle, uint8_t a, uint8_t b, uint8_t c, uint8_t d) -> uint32_t {
+                return isLittle ? (a << 0) | (b << 8) | (c << 16) | (d << 24)
+                                : (d << 0) | (c << 8) | (b << 16) | (a << 24);
+            };
+
+            uint32_t checksum = 0;
+
+            while (loop--)
+                checksum += calculate(isLittleEndian, *i++, *i++, *i++, *i++);
+
+            checksum += (v.size() % sizeof(uint32_t) == 0) ? 0 : calculate(isLittleEndian,
+                                                                           *i++,
+                                                                           i == v.end() ? 0x00 :*i++,
+                                                                           i == v.end() ? 0x00 :*i++,
+                                                                           0);
+
+            std::stringstream result;
+
+            result << "HEX Checksum = " << std::hex << checksum;
+
+            return result.str();
         };
 
         worker.exec(f);
     }
     else {
-        // TODO print usage
-
-        exit(0);
+        std:: cout << parser.howToUse("-m") << std::endl;
     }
 
     return 0;

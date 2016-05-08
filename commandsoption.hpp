@@ -2,6 +2,9 @@
 
 #include "abstractcommandoption.h"
 
+#include <exception>
+#include <iostream>
+
 template <typename T>
 class CommandsOption final : public AbstractCommandOption
 {
@@ -24,9 +27,10 @@ public:
 protected:
     bool tryParse() override {
         try {
-            m_value = parse(m_commandArguments, m_value);
+            m_value = this->parse(m_commandArguments, m_value);
         }
-        catch (...) {
+        catch (const std::exception &e) {
+            std::cout << e.what() << std::endl;
             return false;
         }
 
@@ -99,7 +103,5 @@ protected:
 private:
     T m_value;
 
-    enum {
-        first = 0,
-    };
+    enum { first = 0 };
 };

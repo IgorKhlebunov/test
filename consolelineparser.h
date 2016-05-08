@@ -30,6 +30,9 @@ public:
 
     bool process();
 
+    std::string howToUse(const std::string &command);
+    std::string usage();
+
     template <typename T>
     T value(const std::string &key) {
         for (const auto &c : m_commands) {
@@ -48,6 +51,7 @@ public:
 
 private:
     AbstractCommandOption* find(const std::string &command);
+    std::string howToUse(AbstractCommandOption * command);
 
 private:
     std::string m_applicationName;

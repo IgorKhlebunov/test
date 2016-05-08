@@ -1,7 +1,5 @@
 #include "abstractcommandoption.h"
 
-#include "iostream"
-
 AbstractCommandOption::AbstractCommandOption(const std::string &key,
                                              const std::string &alternativeKey,
                                              const std::string &description)
@@ -13,7 +11,6 @@ AbstractCommandOption::AbstractCommandOption(const std::string &key,
 
 AbstractCommandOption::~AbstractCommandOption()
 {
-    std::cout << "delete " << m_commandKey << std::endl;
 }
 
 bool AbstractCommandOption::parseArguments()
