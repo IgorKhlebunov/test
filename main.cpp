@@ -30,6 +30,11 @@ int main(int argc, char **argv)
     if (s_makeWords == work) {
         std::string word = parser.value<std::string>("-v");
 
+        if (word.empty()) {
+            std::cout << parser.howToUse("-v") << std::endl;
+            return 0;
+        }
+
         std::function<std::string(const std::vector<char>&, const std::string&)> f =
                 [] (const std::vector<char>& v, const std::string &s) {
             std::string text(v.begin(), v.end());
@@ -153,11 +158,12 @@ int main(int argc, char **argv)
 
         worker.exec(f);
     }
-    else {
+    else if (work.empty()) {
         std:: cout << parser.howToUse("-m") << std::endl;
     }
-
-    std::cout << parser.usage() << std::endl;
+    else {
+        std::cout << parser.usage() << std::endl;
+    }
 
     return 0;
 }
